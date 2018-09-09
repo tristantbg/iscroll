@@ -333,7 +333,8 @@ function IScroll (el, options) {
 		disableMouse : utils.hasPointer || utils.hasTouch,
 		startX: 0,
 		startY: 0,
-		scrollY: true,
+    scrollY: true,
+		mouseWheelScrollHorizontally: true,
 		directionLockThreshold: 5,
 		momentum: true,
 
@@ -1198,10 +1199,15 @@ IScroll.prototype = {
 		wheelDeltaX *= this.options.invertWheelDirection;
 		wheelDeltaY *= this.options.invertWheelDirection;
 
-		if ( !this.hasVerticalScroll ) {
-			wheelDeltaX = wheelDeltaY;
-			wheelDeltaY = 0;
-		}
+		if ( !this.hasHorizontalScroll ) {
+      wheelDeltaX = 0;
+    } else if ( !this.hasVerticalScroll && this.options.mouseWheelScrollsHorizontally ) {
+      wheelDeltaX = wheelDeltaX;
+      wheelDeltaX += wheelDeltaY;
+      wheelDeltaY = 0;
+    } if ( !this.hasVerticalScroll ) {
+      wheelDeltaY = 0;
+    }
 
 		if ( this.options.snap ) {
 			newX = this.currentPage.pageX;
